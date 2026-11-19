@@ -1,6 +1,11 @@
 package com.mekamore;
 
+import mekanism.api.MekanismAPI;
+import mekanism.api.gear.ModuleData;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -8,11 +13,8 @@ import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
-import mekanism.api.MekanismIMC;
-import com.mekamore.config.MoreMekaConfig;
-import com.mekamore.registries.MekaMoreCreativeTabs;
+import com.mekamore.registries.MekaMoreConfig;
+import com.mekamore.registries.CreativeTabs;
 import com.mekamore.registries.MekaMoreItems;
 import com.mekamore.registries.MekaMoreModules;
 
@@ -24,18 +26,25 @@ public class MekaMore {
     // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
 
+
+    public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MekaMore.MODID);
+    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MekaMore.MODID);
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MekaMore.MODID);
+    public static final DeferredRegister<ModuleData<?>> MODULES = DeferredRegister.create(MekanismAPI.MODULE_REGISTRY_NAME, MekaMore.MODID);
+
+
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
     public MekaMore(IEventBus modEventBus, ModContainer modContainer) {
-        modContainer.registerConfig(ModConfig.Type.COMMON, MoreMekaConfig.SPEC);
-        MekaMoreModules.MODULES.register(modEventBus);
-        MekaMoreItems.ITEMS.register(modEventBus);
-        MekaMoreCreativeTabs.CREATIVE_TABS.register(modEventBus);
-        modEventBus.addListener(this::onInterModEnqueue);
-    }
+        MekaMoreConfig.register(modContainer);
+        MekaMoreItems.register();
+        MekaMoreModules.register(modEventBus);
+        CreativeTabs.register();
 
-    private void onInterModEnqueue(InterModEnqueueEvent event) {
-        MekanismIMC.addMekaToolModules(MekaMoreModules.LOOTING_UNIT);
+        TABS.register(modEventBus);
+        ITEMS.register(modEventBus);
+        BLOCKS.register(modEventBus);
+        MODULES.register(modEventBus);
     }
 
     public static ResourceLocation rl(String path) {

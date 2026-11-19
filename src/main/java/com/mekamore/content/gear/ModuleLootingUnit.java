@@ -1,7 +1,7 @@
 package com.mekamore.content.gear;
 
 import com.mekamore.MekaMore;
-import com.mekamore.config.MoreMekaConfig;
+import com.mekamore.registries.MekaMoreConfig;
 import com.mekamore.registries.MekaMoreModules;
 import mekanism.api.gear.*;
 import net.minecraft.resources.ResourceLocation;
@@ -10,7 +10,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
@@ -21,11 +20,12 @@ public class ModuleLootingUnit implements ICustomModule<ModuleLootingUnit> {
 
     @Override
     public void adjustAttributes(IModule<ModuleLootingUnit> module, ItemAttributeModifierEvent event) {
-        var baseEnergy = MoreMekaConfig.gear.mekaToolEnergyUsageLooting.getAsLong();
+        var baseEnergy = MekaMoreConfig.mekaToolEnergyUsageLooting.get();
         var totalEnergy = module.getContainerEnergy(event.getItemStack());
-        if (totalEnergy < baseEnergy) return;
+        if (baseEnergy > 0 && totalEnergy < baseEnergy) return;
 
-        var lootingLevel = Math.min(module.getData().getMaxStackSize(), (int) Math.log10((double) totalEnergy / baseEnergy) + 1);
+        var lootingLevel = baseEnergy == 0 ? module.getData().getMaxStackSize()
+              : Math.min(module.getData().getMaxStackSize(), (int) Math.log10((double) totalEnergy / baseEnergy) + 1);
         if (lootingLevel < 1) return;
 
 
@@ -42,7 +42,7 @@ public class ModuleLootingUnit implements ICustomModule<ModuleLootingUnit> {
         var module = IModuleHelper.INSTANCE.getIfEnabled(weaponItem, MekaMoreModules.LOOTING_UNIT);
         if (module == null) return;
 
-        var consume = Math.pow(10, module.getInstalledCount()) * MoreMekaConfig.gear.mekaToolEnergyUsageLooting.get();
+        var consume = Math.pow(10, module.getInstalledCount()) * MekaMoreConfig.mekaToolEnergyUsageLooting.get();
         module.useEnergy((LivingEntity) attacker, weaponItem, (long)consume, true);
     }
 }

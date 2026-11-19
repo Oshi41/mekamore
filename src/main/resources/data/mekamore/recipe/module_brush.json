@@ -7,15 +7,7 @@
   ],
   "key": {
     "E": {
-      "type": "neoforge:components",
-      "items": "minecraft:enchanted_book",
-      "components": {
-        "minecraft:stored_enchantments": {
-          "levels": {
-            "minecraft:looting": 3
-          }
-        }
-      }
+      "item": "minecraft:brush"
     },
     "P": {
       "item": "mekanism:pellet_polonium"
@@ -24,7 +16,7 @@
       "item": "mekanism:alloy_reinforced"
     },
     "D": {
-      "item": "minecraft:diamond_sword"
+      "tag": "minecraft:decorated_pot_sherds"
     },
     "M": {
       "item": "mekanism:module_base"
@@ -34,6 +26,6 @@
     }
   },
   "result": {
-    "id": "mekamore:module_looting_unit"
+    "id": "mekamore:module_brush"
   }
 }

@@ -1,6 +1,17 @@
 {
-  "item.mekamore.module_looting_unit": "Looting Unit",
   "itemGroup.mekamore": "MekaMore",
-  "module.mekamore.looting_unit": "Looting Unit",
-  "description.mekamore.looting_unit": "Grants the Meka-Tool one Looting level per installed unit, up to Looting IV. Energy is used on each successful melee hit; configure the cost in the MekaMore common config."
+
+  "item.mekamore.module_looting": "Looting Unit",
+
+  "module.mekamore.module_looting": "Looting Unit",
+  "description.mekamore.module_looting": "Grants the Meka-Tool one Looting level per installed unit, up to Looting IV. Energy is used on each successful melee hit; configure the cost in the MekaMore common config.",
+
+  "module.mekamore.module_brush": "Brush Unit",
+  "description.mekamore.module_brush": "Allows the Meka-Tool to brush suspicious sand and gravel.",
+
+
+  "mekamore.configuration.title": "MekaMore Configuration",
+  "mekamore.configuration.modular_units": "Modular Units",
+  "mekamore.configuration.mekaToolEnergyUsageLooting": "Looting Unit Energy Usage",
+  "mekamore.configuration.mekaToolEnergyUsageBrush": "Brush Unit Energy Usage"
 }
