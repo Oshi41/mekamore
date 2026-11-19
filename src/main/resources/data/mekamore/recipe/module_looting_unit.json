@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PEP",
+    "DMD",
+    "ARA"
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:enchanted_book",
+      "components": {
+        "minecraft:stored_enchantments": {
+          "minecraft:looting": 3
+        }
+      }
+    },
+    "P": {
+      "item": "mekanism:pellet_polonium"
+    },
+    "A": {
+      "item": "mekanism:alloy_reinforced"
+    },
+    "D": {
+      "item": "minecraft:diamond_sword"
+    },
+    "M": {
+      "item": "mekanism:module_base"
+    },
+    "R": {
+      "item": "mekanism:ingot_refined_glowstone"
+    }
+  },
+  "result": {
+    "id": "mekamore:module_looting_unit"
+  }
+}

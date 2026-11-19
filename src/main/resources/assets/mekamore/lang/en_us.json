@@ -1,0 +1,6 @@
+{
+  "item.mekamore.module_looting_unit": "Looting Unit",
+  "itemGroup.mekamore": "MekaMore",
+  "module.mekamore.looting_unit": "Looting Unit",
+  "description.mekamore.looting_unit": "Grants the Meka-Tool one Looting level per installed unit, up to Looting IV. Energy is used on each successful melee hit; configure the cost in the MekaMore common config."
+}
