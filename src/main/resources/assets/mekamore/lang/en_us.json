@@ -13,5 +13,12 @@
   "mekamore.configuration.title": "MekaMore Configuration",
   "mekamore.configuration.modular_units": "Modular Units",
   "mekamore.configuration.mekaToolEnergyUsageLooting": "Looting Unit Energy Usage",
-  "mekamore.configuration.mekaToolEnergyUsageBrush": "Brush Unit Energy Usage"
+  "mekamore.configuration.mekaToolEnergyUsageBrush": "Brush Unit Energy Usage",
+
+  "item.mekamore.module_zoom": "Zoom Unit",
+  "module.mekamore.module_zoom": "Zoom Unit",
+  "description.mekamore.module_zoom": "Zooms in while the zoom key (Z) is held. Each installed unit increases magnification. Energy is used per tick while the module is enabled.",
+  "key.mekamore.module_zoom": "Zoom (MekaSuit)",
+  "key.categories.mekamore": "MekaMore",
+  "hud.mekamore.module_zoom": "Zoom: %s%%"
 }

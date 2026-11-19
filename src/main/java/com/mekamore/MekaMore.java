@@ -1,10 +1,13 @@
 package com.mekamore;
 
+import com.mekamore.registries.*;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ModuleData;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
 
@@ -13,10 +16,6 @@ import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.ModContainer;
-import com.mekamore.registries.MekaMoreConfig;
-import com.mekamore.registries.CreativeTabs;
-import com.mekamore.registries.MekaMoreItems;
-import com.mekamore.registries.MekaMoreModules;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(MekaMore.MODID)
@@ -40,6 +39,10 @@ public class MekaMore {
         MekaMoreItems.register();
         MekaMoreModules.register(modEventBus);
         CreativeTabs.register();
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            modEventBus.addListener(com.mekamore.registries.KeyBinding::register);
+        }
 
         TABS.register(modEventBus);
         ITEMS.register(modEventBus);

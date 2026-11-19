@@ -5,6 +5,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class MekaMoreConfig {
+
     //#region Register
 
     public static void register(ModContainer container) {
@@ -20,6 +21,10 @@ public class MekaMoreConfig {
                 .comment("How much energy is consumed for every brushed block")
                 .translation("mekamore.configuration.mekaToolEnergyUsageBrush")
                 .defineInRange("mekaToolEnergyUsageBrush", 25000L, 0, Integer.MAX_VALUE);
+        mekaToolEnergyUsageZoom = builder
+                .comment("How much energy is consumed per tick while zooming")
+                .translation("mekamore.configuration.module_zoom")
+                .defineInRange("mekaToolEnergyUsageZoom", 500L, 0, Integer.MAX_VALUE);
 
         builder.pop();
 
@@ -32,4 +37,5 @@ public class MekaMoreConfig {
 
     public static ModConfigSpec.LongValue mekaToolEnergyUsageLooting;
     public static ModConfigSpec.LongValue mekaToolEnergyUsageBrush;
+    public static ModConfigSpec.LongValue mekaToolEnergyUsageZoom;
 }

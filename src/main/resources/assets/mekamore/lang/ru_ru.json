@@ -1,0 +1,21 @@
+{
+  "itemGroup.mekamore": "MekaMore",
+  "item.mekamore.module_looting": "Looting Unit",
+  "module.mekamore.module_looting": "Looting Unit",
+  "description.mekamore.module_looting": "Grants the Meka-Tool one Looting level per installed unit, up to Looting IV. Energy is used on each successful melee hit; configure the cost in the MekaMore common config.",
+  "module.mekamore.module_brush": "Brush Unit",
+  "description.mekamore.module_brush": "Allows the Meka-Tool to brush suspicious sand and gravel.",
+  "mekamore.configuration.title": "Конфигурация MekaMore",
+  "mekamore.configuration.modular_units": "Модульные блоки",
+  "mekamore.configuration.mekaToolEnergyUsageLooting": "Расход энергии модуля добычи",
+  "mekamore.configuration.mekaToolEnergyUsageBrush": "Расход энергии модуля кисти",
+  "item.mekamore.module_zoom": "Zoom Unit",
+  "module.mekamore.module_zoom": "Zoom Unit",
+  "description.mekamore.module_zoom": "Zooms in while the zoom key (Z) is held. Each installed unit increases magnification. Energy is used per tick while the module is enabled.",
+  "key.mekamore.module_zoom": "Zoom (MekaSuit)",
+  "key.categories.mekamore": "MekaMore",
+  "hud.mekamore.module_zoom": "Zoom: %s%%",
+  "description.mekamore.looting_unit": "Каждый установленный модуль добавляет Meka-Tool один уровень «Добычи», вплоть до IV. За каждую успешную атаку расходуется энергия; стоимость можно настроить в общей конфигурации MekaMore.",
+  "item.mekamore.module_looting_unit": "Модуль добычи",
+  "module.mekamore.looting_unit": "Модуль добычи"
+}
