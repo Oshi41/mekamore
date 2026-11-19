@@ -7,10 +7,13 @@
   ],
   "key": {
     "E": {
-      "item": "minecraft:enchanted_book",
+      "type": "neoforge:components",
+      "items": "minecraft:enchanted_book",
       "components": {
         "minecraft:stored_enchantments": {
-          "minecraft:looting": 3
+          "levels": {
+            "minecraft:looting": 3
+          }
         }
       }
     },

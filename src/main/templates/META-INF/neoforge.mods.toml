@@ -77,3 +77,10 @@ MekaMore adds additional modules for Mekanism equipment, including a Looting Uni
     versionRange="${mekanism_version_range}"
     ordering="AFTER"
     side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="jei"
+    type="optional"
+    versionRange="[19, )"
+    ordering="AFTER"
+    side="CLIENT"
