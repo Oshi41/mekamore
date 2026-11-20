@@ -30,6 +30,7 @@ public class MekaMore {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MekaMore.MODID);
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MekaMore.MODID);
     public static final DeferredRegister<ModuleData<?>> MODULES = DeferredRegister.create(MekanismAPI.MODULE_REGISTRY_NAME, MekaMore.MODID);
+    public static final DeferredRegister.DataComponents DATA_COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MekaMore.MODID);
 
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
@@ -39,15 +40,18 @@ public class MekaMore {
         MekaMoreItems.register();
         MekaMoreModules.register(modEventBus);
         CreativeTabs.register();
+        MekaMoreDataComponents.register(modEventBus);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(com.mekamore.registries.KeyBinding::register);
+            modEventBus.addListener(com.mekamore.registries.Client::register);
         }
 
         TABS.register(modEventBus);
         ITEMS.register(modEventBus);
         BLOCKS.register(modEventBus);
         MODULES.register(modEventBus);
+        DATA_COMPONENTS.register(modEventBus);
     }
 
     public static ResourceLocation rl(String path) {

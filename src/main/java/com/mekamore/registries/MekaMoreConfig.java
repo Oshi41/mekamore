@@ -25,6 +25,9 @@ public class MekaMoreConfig {
                 .comment("How much energy is consumed per tick while zooming")
                 .translation("mekamore.configuration.module_zoom")
                 .defineInRange("mekaToolEnergyUsageZoom", 500L, 0, Integer.MAX_VALUE);
+        mekaToolLiquidTankEnergyPerOperation = builder
+                .comment("How much energy will be consumed per bucket")
+                .defineInRange("mekaToolLiquidTankEnergyPerOperation", 10000L, 0, Integer.MAX_VALUE);
 
         builder.pop();
 
@@ -38,4 +41,5 @@ public class MekaMoreConfig {
     public static ModConfigSpec.LongValue mekaToolEnergyUsageLooting;
     public static ModConfigSpec.LongValue mekaToolEnergyUsageBrush;
     public static ModConfigSpec.LongValue mekaToolEnergyUsageZoom;
+    public static ModConfigSpec.LongValue mekaToolLiquidTankEnergyPerOperation;
 }

@@ -3,6 +3,7 @@ package com.mekamore.content.gear;
 import com.mekamore.MekaMore;
 import com.mekamore.registries.MekaMoreConfig;
 import com.mekamore.registries.MekaMoreModules;
+import com.mekamore.utils.MekaMoreUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ICustomModule;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BrushableBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BrushableBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -30,6 +32,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -99,12 +102,18 @@ public class ModuleBrushUnit implements ICustomModule<ModuleBrushUnit> {
         e.setDuration(e.getDuration() - 1);
 
         if (e.getDuration() % 10 == 5) {
-            for (BrushableBlockEntity entity : findAOE(e.getEntity(), hit).toList()) {
-                if (!enoughEnergy(e.getItem())) break;
+            var brushes = MekaMoreUtils.findAOE(
+                            e.getEntity(),
+                            hit,
+                            module.getInstalledCount(),
+                            x -> BlockEntityType.BRUSHABLE_BLOCK.isValid(x.blockState.get()))
+                    .map(x -> x.entity.get() instanceof BrushableBlockEntity b ? b : null)
+                    .filter(Objects::nonNull)
+                    .toList();
 
-
+            for (int i = 0; i < brushes.size() && enoughEnergy(e.getItem()); i++) {
                 module.useEnergy(e.getEntity(), e.getItem(), MekaMoreConfig.mekaToolEnergyUsageBrush.get());
-                entity.brush(e.getEntity().level().getGameTime(), (Player) e.getEntity(), hit.getDirection());
+                brushes.get(i).brush(e.getEntity().level().getGameTime(), (Player) e.getEntity(), hit.getDirection());
             }
         }
     }
@@ -135,25 +144,5 @@ public class ModuleBrushUnit implements ICustomModule<ModuleBrushUnit> {
         if (module == null) return false;
 
         return module.hasEnoughEnergy(stack, MekaMoreConfig.mekaToolEnergyUsageBrush.get());
-    }
-
-    private static Stream<BrushableBlockEntity> findAOE(LivingEntity entity, BlockHitResult hit) {
-        var radius = 1;
-
-        Vec3i adjustment = switch (hit.getDirection()) {
-            case EAST, WEST -> new Vec3i(0, radius, radius);
-            case UP, DOWN -> new Vec3i(radius, 0, radius);
-            case SOUTH, NORTH -> new Vec3i(radius, radius, 0);
-        };
-
-        var level = entity.level();
-
-        BlockPos first = hit.getBlockPos().subtract(adjustment);
-        BlockPos second = hit.getBlockPos().offset(adjustment);
-        AABB box = new AABB(first.getX(), first.getY(), first.getZ(), second.getX(), second.getY(), second.getZ());
-        return BlockPos.betweenClosedStream(BlockPos.containing(box.minX, box.minY, box.minZ), BlockPos.containing(box.maxX, box.maxY, box.maxZ))
-                .map(level::getBlockEntity)
-                .filter(x -> x instanceof BrushableBlockEntity)
-                .map(x -> (BrushableBlockEntity) x);
     }
 }
