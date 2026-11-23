@@ -1,6 +1,5 @@
 package com.mekamore.client;
 
-import com.mekamore.registries.MekaMoreDataComponents;
 import com.mekamore.registries.MekaMoreModules;
 import mekanism.api.gear.IModuleHelper;
 import net.minecraft.client.gui.Font;
@@ -14,7 +13,6 @@ import net.neoforged.neoforge.client.IItemDecorator;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.SimpleFluidContent;
 
 @OnlyIn(Dist.CLIENT)
 public class MekaToolDecorator implements IItemDecorator {

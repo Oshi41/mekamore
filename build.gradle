@@ -146,6 +146,7 @@ dependencies {
     // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
+    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:all")
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:api")
     localRuntime("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:all")
 

@@ -2,6 +2,7 @@ package com.mekamore.registries;
 
 import com.mekamore.MekaMore;
 import com.mekamore.fluid.SimpleContainer;
+import com.mekamore.network4.RevealFilterList;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModuleHelper;
 import net.minecraft.core.component.DataComponentType;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 public class MekaMoreDataComponents {
     public static DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidContent>> MEKA_TOOL_FLUID;
+    public static DeferredHolder<DataComponentType<?>, DataComponentType<RevealFilterList>> REVEAL_FILTERS;
 
     public static void register(IEventBus modEventBus) {
         MEKA_TOOL_FLUID = MekaMore.DATA_COMPONENTS.registerComponentType(
@@ -27,6 +29,12 @@ public class MekaMoreDataComponents {
                 builder -> builder
                         .persistent(SimpleFluidContent.CODEC)
                         .networkSynchronized(SimpleFluidContent.STREAM_CODEC));
+
+        REVEAL_FILTERS = MekaMore.DATA_COMPONENTS.registerComponentType(
+                "reveal_filters",
+                builder -> builder
+                        .persistent(RevealFilterList.CODEC)
+                        .networkSynchronized(RevealFilterList.STREAM_CODEC));
 
         modEventBus.addListener(MekaMoreDataComponents::registerCapabilities);
     }

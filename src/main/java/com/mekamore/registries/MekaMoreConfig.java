@@ -28,6 +28,9 @@ public class MekaMoreConfig {
         mekaToolLiquidTankEnergyPerOperation = builder
                 .comment("How much energy will be consumed per bucket")
                 .defineInRange("mekaToolLiquidTankEnergyPerOperation", 10000L, 0, Integer.MAX_VALUE);
+        revealGooglesMaxFilters = builder
+                .comment("Max amount of filters you can set with module Google of Revealing")
+                .defineInRange("revealGooglesMaxFilters", 3, 1, 10);
 
         builder.pop();
 
@@ -42,4 +45,5 @@ public class MekaMoreConfig {
     public static ModConfigSpec.LongValue mekaToolEnergyUsageBrush;
     public static ModConfigSpec.LongValue mekaToolEnergyUsageZoom;
     public static ModConfigSpec.LongValue mekaToolLiquidTankEnergyPerOperation;
+    public static ModConfigSpec.IntValue revealGooglesMaxFilters;
 }

@@ -41,6 +41,7 @@ public class MekaMore {
         MekaMoreModules.register(modEventBus);
         CreativeTabs.register();
         MekaMoreDataComponents.register(modEventBus);
+        modEventBus.addListener(MekaMoreNetwork::registerNetwork);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(com.mekamore.registries.KeyBinding::register);
