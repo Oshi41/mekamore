@@ -1,4 +1,4 @@
-package com.mekamore.client.gui.window;
+package com.mekamore.client.gui;
 
 import com.mekamore.content.gear.reveal_googles.ModuleRevealingGogglesConfig;
 import com.mekamore.registries.MekaMoreConfig;
@@ -36,7 +36,7 @@ import java.util.Locale;
  * All widget changes are deferred to {@link #tick()} so we never modify the child list from inside
  * a click/typing callback, and the search field is created once per PICK session so typing does not reset it.
  */
-public class GuiRevealGogglesOptionsScreen extends GuiWindow {
+public class GuiRevealGogglesOptions extends GuiWindow {
 
     public static final int W = 200;
     public static final int H = 180;
@@ -77,7 +77,7 @@ public class GuiRevealGogglesOptionsScreen extends GuiWindow {
     private boolean rebuildContent;
     private boolean rebuildResults;
 
-    public GuiRevealGogglesOptionsScreen(IGuiWrapper gui, int x, int y, IModule<?> module, int slotIndex,
+    public GuiRevealGogglesOptions(IGuiWrapper gui, int x, int y, IModule<?> module, int slotIndex,
                                    ModuleRevealingGogglesConfig config) {
         super(gui, x, y, W, H, SelectedWindowData.UNSPECIFIED);
         interactionStrategy = InteractionStrategy.NONE;

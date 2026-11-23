@@ -31,6 +31,18 @@ public class MekaMoreConfig {
         revealGooglesMaxFilters = builder
                 .comment("Max amount of filters you can set with module Google of Revealing")
                 .defineInRange("revealGooglesMaxFilters", 3, 1, 10);
+        revealGooglesMaxScanRadius = builder
+                .comment("How many blocks away from player can be scanned at once at max upgrades")
+                .defineInRange("revealGooglesMaxScanRadius", 32, 1, 256);
+        revealGooglesEnergyPerBlock = builder
+                .comment("How many energy will be consumed by helmet per each scanned block")
+                .defineInRange("revealGooglesEnergyPerBlock", 50, 0, Integer.MAX_VALUE);
+        revealGooglesScanDelay = builder
+                .comment("How many time in ticks will pass between 2 scans for same user")
+                .defineInRange("revealGooglesScanDelay", 50, 10, Integer.MAX_VALUE);
+        revealGooglesMaxResult = builder
+                .comment("How many search results (max amount) of block / entities will return from serveer")
+                .defineInRange("revealGooglesMaxResult", 48, 1, 1024);
 
         builder.pop();
 
@@ -46,4 +58,8 @@ public class MekaMoreConfig {
     public static ModConfigSpec.LongValue mekaToolEnergyUsageZoom;
     public static ModConfigSpec.LongValue mekaToolLiquidTankEnergyPerOperation;
     public static ModConfigSpec.IntValue revealGooglesMaxFilters;
+    public static ModConfigSpec.IntValue revealGooglesMaxScanRadius;
+    public static ModConfigSpec.IntValue revealGooglesEnergyPerBlock;
+    public static ModConfigSpec.IntValue revealGooglesScanDelay;
+    public static ModConfigSpec.IntValue revealGooglesMaxResult;
 }

@@ -58,7 +58,7 @@ public class ModuleBrushUnit implements ICustomModule<ModuleBrushUnit> {
             return InteractionResult.sidedSuccess(true);
         }
 
-        if (!enoughEnergy(context.getItemInHand())) {
+        if (!enoughEnergy(context.getPlayer(), context.getItemInHand())) {
             return InteractionResult.PASS;
         }
 
@@ -72,7 +72,7 @@ public class ModuleBrushUnit implements ICustomModule<ModuleBrushUnit> {
         if (module != null) {
             var hit = hitBlock(e.getEntity());
             if (hit != null) {
-                if (enoughEnergy(e.getItem())) {
+                if (enoughEnergy(e.getEntity(), e.getItem())) {
                     e.setDuration(Items.BRUSH.getUseDuration(e.getItem(), e.getEntity()));
                     return;
                 }
@@ -97,7 +97,7 @@ public class ModuleBrushUnit implements ICustomModule<ModuleBrushUnit> {
             return;
         }
 
-        if (!enoughEnergy(e.getItem())) return;
+        if (!enoughEnergy(e.getEntity(), e.getItem())) return;
 
         e.setDuration(e.getDuration() - 1);
 
@@ -111,8 +111,8 @@ public class ModuleBrushUnit implements ICustomModule<ModuleBrushUnit> {
                     .filter(Objects::nonNull)
                     .toList();
 
-            for (int i = 0; i < brushes.size() && enoughEnergy(e.getItem()); i++) {
-                module.useEnergy(e.getEntity(), e.getItem(), MekaMoreConfig.mekaToolEnergyUsageBrush.get());
+            for (int i = 0; i < brushes.size() && enoughEnergy(e.getEntity(), e.getItem()); i++) {
+                module.useEnergy(e.getEntity(), e.getItem(), MekaMoreConfig.mekaToolEnergyUsageBrush.get(), true);
                 brushes.get(i).brush(e.getEntity().level().getGameTime(), (Player) e.getEntity(), hit.getDirection());
             }
         }
@@ -139,7 +139,7 @@ public class ModuleBrushUnit implements ICustomModule<ModuleBrushUnit> {
         return null;
     }
 
-    private static boolean enoughEnergy(ItemStack stack) {
+    private static boolean enoughEnergy(LivingEntity e, ItemStack stack) {
         var module = IModuleHelper.INSTANCE.getIfEnabled(stack, MekaMoreModules.BRUSH_UNIT);
         if (module == null) return false;
 

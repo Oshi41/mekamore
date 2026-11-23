@@ -1,5 +1,7 @@
 package com.mekamore.content.gear.reveal_googles;
 
+import com.mekamore.network.packages.ScanResult;
+import com.mekamore.registries.MekaMoreConfig;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -10,6 +12,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +22,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -42,26 +46,13 @@ import java.util.function.Predicate;
  */
 public final class ModuleRevealingGoggles implements ICustomModule<ModuleRevealingGoggles> {
 
-    public static final int SCAN_RADIUS = 64;
-    /** Max blocks kept per filter entry (the nearest ones) — keeps the screen readable. */
-    public static final int MAX_BLOCKS_PER_FILTER = 48;
-    /** Scan every 10 ticks (0.5 s). */
-    public static final int SCAN_INTERVAL_TICKS = 10;
-
-    /** What a scan found. Entity ids are {@link Entity#getId()} values. */
-    public record ScanResult(Set<Integer> entityIds, List<BlockPos> blocks) {
-        public boolean isEmpty() {
-            return entityIds.isEmpty() && blocks.isEmpty();
-        }
-    }
-
     @Override
     public void tickServer(IModule<ModuleRevealingGoggles> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         if (!(player.level() instanceof ServerLevel level)) {
             return;
         }
         // Stateless cooldown: no per-player map to leak (this instance is shared by every wearer)
-        if (player.tickCount % SCAN_INTERVAL_TICKS != 0) {
+        if (player.tickCount % MekaMoreConfig.revealGooglesScanDelay.getAsInt() != 0) {
             return;
         }
 
@@ -69,6 +60,9 @@ public final class ModuleRevealingGoggles implements ICustomModule<ModuleReveali
         if (config == null || config.get().isEmpty()) {
             return;
         }
+
+        if (!module.hasEnoughEnergy(stack, getEnergy(module)))
+            return;
 
         // Split the configured keys by kind
         Set<ResourceLocation> entityTypes = new HashSet<>();
@@ -81,24 +75,40 @@ public final class ModuleRevealingGoggles implements ICustomModule<ModuleReveali
             }
         }
 
-        ScanResult result = new ScanResult(scanEntities(level, player, entityTypes), scanBlocks(level, player.blockPosition(), blocks));
-        if (!result.isEmpty()) {
-            // TODO: nothing consumes the result yet (the previous version also computed it and dropped it).
-            //  Deliver it here: e.g. a packet to the player for block outlines, and/or applying glowing to the entities.
+        ScanResult result = new ScanResult(
+                scanEntities(module, level, player, entityTypes),
+                scanBlocks(module, level, player.blockPosition(), blocks)
+        );
+
+        module.useEnergy(player, stack, getEnergy(module), true);
+
+        if (!result.isEmpty() && player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, result);
         }
+    }
+
+    private static long getEnergy(IModule<ModuleRevealingGoggles> module) {
+        var volume = Math.pow(getRadius(module), 3);
+        var energy = volume * MekaMoreConfig.revealGooglesEnergyPerBlock.get();
+        return (long) Math.ceil(energy);
+    }
+
+    private static int getRadius(IModule<ModuleRevealingGoggles> module) {
+        var part = (double) module.getInstalledCount() / module.getData().getMaxStackSize();
+        var radius = MekaMoreConfig.revealGooglesMaxScanRadius.get() * part;
+        return (int) Math.floor(radius);
     }
 
     // ── Entities ──────────────────────────────────────────────────────
 
-    private static Set<Integer> scanEntities(ServerLevel level, Player player, Set<ResourceLocation> entityTypes) {
+    private static Set<Integer> scanEntities(IModule<ModuleRevealingGoggles> module, ServerLevel level, Player player, Set<ResourceLocation> entityTypes) {
         Set<Integer> ids = new HashSet<>();
-        if (entityTypes.isEmpty()) {
-            return ids;
-        }
-        AABB area = new AABB(player.blockPosition()).inflate(SCAN_RADIUS);
-        for (Entity entity : level.getEntitiesOfClass(Entity.class, area,
-                e -> e != player && !e.isRemoved() && entityTypes.contains(BuiltInRegistries.ENTITY_TYPE.getKey(e.getType())))) {
-            ids.add(entity.getId());
+        if (!entityTypes.isEmpty()) {
+            AABB area = new AABB(player.blockPosition()).inflate(getRadius(module));
+            for (Entity entity : level.getEntitiesOfClass(Entity.class, area,
+                    e -> e != player && !e.isRemoved() && entityTypes.contains(BuiltInRegistries.ENTITY_TYPE.getKey(e.getType())))) {
+                ids.add(entity.getId());
+            }
         }
         return ids;
     }
@@ -108,9 +118,8 @@ public final class ModuleRevealingGoggles implements ICustomModule<ModuleReveali
     /**
      * Walks only chunks that are already loaded (level.getBlockState() on an unloaded chunk can load or even generate it),
      * skips whole 16³ sections whose palette can't contain a target, and keeps the nearest
-     * {@link #MAX_BLOCKS_PER_FILTER} positions per block type using a bounded heap.
      */
-    private static List<BlockPos> scanBlocks(ServerLevel level, BlockPos origin, Set<Block> targets) {
+    private static List<BlockPos> scanBlocks(IModule<ModuleRevealingGoggles> module, ServerLevel level, BlockPos origin, Set<Block> targets) {
         if (targets.isEmpty()) {
             return List.of();
         }
@@ -118,10 +127,12 @@ public final class ModuleRevealingGoggles implements ICustomModule<ModuleReveali
         Comparator<BlockPos> farthestFirst = Comparator.comparingDouble((BlockPos p) -> p.distSqr(origin)).reversed();
         Map<Block, PriorityQueue<BlockPos>> nearest = new HashMap<>();
 
-        int minX = origin.getX() - SCAN_RADIUS, maxX = origin.getX() + SCAN_RADIUS;
-        int minZ = origin.getZ() - SCAN_RADIUS, maxZ = origin.getZ() + SCAN_RADIUS;
-        int minY = Math.max(origin.getY() - SCAN_RADIUS, level.getMinBuildHeight());
-        int maxY = Math.min(origin.getY() + SCAN_RADIUS, level.getMaxBuildHeight() - 1);
+        var radius = getRadius(module);
+
+        int minX = origin.getX() - radius, maxX = origin.getX() + radius;
+        int minZ = origin.getZ() - radius, maxZ = origin.getZ() + radius;
+        int minY = Math.max(origin.getY() - radius, level.getMinBuildHeight());
+        int maxY = Math.min(origin.getY() + radius, level.getMaxBuildHeight() - 1);
 
         for (int chunkX = minX >> 4; chunkX <= maxX >> 4; chunkX++) {
             for (int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; chunkZ++) {
@@ -150,7 +161,7 @@ public final class ModuleRevealingGoggles implements ICustomModule<ModuleReveali
                                 }
                                 PriorityQueue<BlockPos> queue = nearest.computeIfAbsent(block, b -> new PriorityQueue<>(farthestFirst));
                                 BlockPos pos = new BlockPos(baseX + x, baseY + y, baseZ + z);
-                                if (queue.size() < MAX_BLOCKS_PER_FILTER) {
+                                if (queue.size() < MekaMoreConfig.revealGooglesMaxResult.get()) {
                                     queue.add(pos);
                                 } else if (pos.distSqr(origin) < queue.peek().distSqr(origin)) {
                                     queue.poll();
@@ -169,8 +180,4 @@ public final class ModuleRevealingGoggles implements ICustomModule<ModuleReveali
         return found;
     }
 
-    @Override
-    public boolean canPerformAction(IModule<ModuleRevealingGoggles> module, IModuleContainer container, ItemStack stack, ItemAbility ability) {
-        return false;
-    }
 }

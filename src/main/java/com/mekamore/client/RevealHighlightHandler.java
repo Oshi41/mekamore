@@ -47,9 +47,12 @@ public final class RevealHighlightHandler {
 
         // Reset all previously glowing entities first
         level.entitiesForRendering().forEach(e -> {
-            if (e.isCurrentlyGlowing() && glowingEntityIds.contains(e.getId())) return;
-            // Only clear glow WE set — check the set from the previous packet
-            e.setGlowingTag(glowingEntityIds.contains(e.getId()));
+            if (!glowingEntityIds.contains(e.getId()))
+                return;
+
+            if (!e.isCurrentlyGlowing()){
+                e.setGlowingTag(true);
+            }
         });
     }
 

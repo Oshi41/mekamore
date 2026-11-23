@@ -1,6 +1,7 @@
 package com.mekamore.content.gear.reveal_googles;
 
 import com.google.common.collect.ImmutableList;
+import com.mekamore.MekaMore;
 import com.mekamore.registries.MekaMoreConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -8,6 +9,8 @@ import io.netty.buffer.ByteBuf;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.config.ModuleConfig;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -35,7 +38,7 @@ import java.util.Objects;
 public class ModuleRevealingGogglesConfig extends ModuleConfig<List<ResourceKey<?>>> {
 
     /** Unique name of this config on the module. Use this one constant for registration, lookup and saving. */
-    public static final ResourceLocation FILTERS_KEY = ResourceLocation.fromNamespaceAndPath("mekamore", "reveal_filters");
+    public static final ResourceLocation FILTERS_KEY = MekaMore.rl("reveal_filters");
 
     // ── Key codecs ────────────────────────────────────────────────────
 
@@ -44,13 +47,13 @@ public class ModuleRevealingGogglesConfig extends ModuleConfig<List<ResourceKey<
     }
 
     private static final Codec<ResourceKey<?>> KEY_CODEC = RecordCodecBuilder.<ResourceKey<?>>create(i -> i.group(
-            ResourceLocation.CODEC.fieldOf("registry").forGetter((ResourceKey<?> k) -> k.registry()),
-            ResourceLocation.CODEC.fieldOf("location").forGetter((ResourceKey<?> k) -> k.location())
+            ResourceLocation.CODEC.fieldOf("registry").forGetter(ResourceKey::registry),
+            ResourceLocation.CODEC.fieldOf("location").forGetter(ResourceKey::location)
     ).apply(i, ModuleRevealingGogglesConfig::key));
 
     private static final StreamCodec<ByteBuf, ResourceKey<?>> KEY_STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC, (ResourceKey<?> k) -> k.registry(),
-            ResourceLocation.STREAM_CODEC, (ResourceKey<?> k) -> k.location(),
+            ResourceLocation.STREAM_CODEC, ResourceKey::registry,
+            ResourceLocation.STREAM_CODEC, ResourceKey::location,
             ModuleRevealingGogglesConfig::key);
 
     private static final StreamCodec<ByteBuf, List<ResourceKey<?>>> KEYS_STREAM_CODEC =
@@ -74,7 +77,11 @@ public class ModuleRevealingGogglesConfig extends ModuleConfig<List<ResourceKey<
     // ── Factories ─────────────────────────────────────────────────────
 
     public static ModuleRevealingGogglesConfig createDefault(ResourceLocation name) {
-        return new ModuleRevealingGogglesConfig(name, ImmutableList.of());
+        // TODO remove
+        return new ModuleRevealingGogglesConfig(name, ImmutableList.of(
+                ResourceKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("iron_ore")),
+                ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.withDefaultNamespace("enderman"))
+        ));
     }
 
     public static ModuleRevealingGogglesConfig create(ResourceLocation name, List<ResourceKey<?>> keys) {

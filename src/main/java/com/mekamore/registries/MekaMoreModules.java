@@ -56,7 +56,7 @@ public class MekaMoreModules {
                 x -> x.stacksTo(10).rarity(Rarity.EPIC));
         REVEALING_UNIT = MekaMore.MODULES.register(MekaMoreItems.REVEALING_UNIT.getId().getPath(),
                 () -> new ModuleData<>(ModuleData.ModuleDataBuilder
-                        .customInstanced(ModuleRevealingGoggles::new, MekaMoreItems.REVEALING_UNIT)
+                        .<ModuleRevealingGoggles>custom(x -> new ModuleRevealingGoggles(), MekaMoreItems.REVEALING_UNIT)
                         .maxStackSize(MekaMoreItems.REVEALING_UNIT.asItem().getDefaultMaxStackSize())
                         .addConfig(ModuleRevealingGogglesConfig.createDefault(ModuleRevealingGogglesConfig.FILTERS_KEY),
                                 ModuleRevealingGogglesConfig.CODEC,

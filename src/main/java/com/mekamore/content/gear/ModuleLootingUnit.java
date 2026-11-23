@@ -17,19 +17,18 @@ import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 @EventBusSubscriber(modid = MekaMore.MODID)
 public class ModuleLootingUnit implements ICustomModule<ModuleLootingUnit> {
     private static final ResourceLocation LOOTING_UNIT = MekaMore.rl("looting_unit");
+    private static long getEnergy(IModule<ModuleLootingUnit> module) {
+        var base = Math.pow(module.getData().getMaxStackSize(), module.getInstalledCount());
+        var energy = MekaMoreConfig.mekaToolEnergyUsageLooting.get() * base;
+        return (long) Math.ceil(energy);
+    }
 
     @Override
     public void adjustAttributes(IModule<ModuleLootingUnit> module, ItemAttributeModifierEvent event) {
-        var baseEnergy = MekaMoreConfig.mekaToolEnergyUsageLooting.get();
-        var totalEnergy = module.getContainerEnergy(event.getItemStack());
-        if (baseEnergy > 0 && totalEnergy < baseEnergy) return;
+        if (!module.hasEnoughEnergy(event.getItemStack(), getEnergy(module))) return;
 
-        var lootingLevel = baseEnergy == 0 ? module.getData().getMaxStackSize()
-              : Math.min(module.getData().getMaxStackSize(), (int) Math.log10((double) totalEnergy / baseEnergy) + 1);
-        if (lootingLevel < 1) return;
+        var modifier = new AttributeModifier(LOOTING_UNIT, module.getInstalledCount(), AttributeModifier.Operation.ADD_VALUE);
 
-
-        var modifier = new AttributeModifier(LOOTING_UNIT, lootingLevel, AttributeModifier.Operation.ADD_VALUE);
         event.addModifier(Attributes.LUCK, modifier, EquipmentSlotGroup.MAINHAND);
     }
 
@@ -42,7 +41,6 @@ public class ModuleLootingUnit implements ICustomModule<ModuleLootingUnit> {
         var module = IModuleHelper.INSTANCE.getIfEnabled(weaponItem, MekaMoreModules.LOOTING_UNIT);
         if (module == null) return;
 
-        var consume = Math.pow(10, module.getInstalledCount()) * MekaMoreConfig.mekaToolEnergyUsageLooting.get();
-        module.useEnergy((LivingEntity) attacker, weaponItem, (long)consume, true);
+        module.useEnergy((LivingEntity) attacker, weaponItem, (long)getEnergy(module), true);
     }
 }

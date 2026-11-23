@@ -144,7 +144,7 @@ public final class ModuleLiquidTankUnit implements ICustomModule<ModuleLiquidTan
                 continue;
             }
 
-            module.useEnergy(player, toolStack, energyCost);
+            module.useEnergy(player, toolStack, energyCost, true);
             player.awardStat(Stats.ITEM_USED.get(toolStack.getItem()));
             level.gameEvent(player, GameEvent.FLUID_PICKUP, candidate.pos);
             pickup.getPickupSound(state).ifPresent(sound ->
@@ -194,7 +194,7 @@ public final class ModuleLiquidTankUnit implements ICustomModule<ModuleLiquidTan
             if (stored.isEmpty() || stored.getAmount() < FluidType.BUCKET_VOLUME) break;
             if (!module.hasEnoughEnergy(toolStack, energyCost)) break;
 
-            BlockState state = level.getBlockState(candidate.pos);
+            BlockState state = candidate.blockState.get();
 
             // Drain one bucket from our tank first (simulate)
             FluidStack toDrain = stored.copyWithAmount(FluidType.BUCKET_VOLUME);
@@ -208,7 +208,7 @@ public final class ModuleLiquidTankUnit implements ICustomModule<ModuleLiquidTan
             // World accepted it — now actually drain from the tank
             tank.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
 
-            module.useEnergy(player, toolStack, energyCost);
+            module.useEnergy(player, toolStack, energyCost, true);
             changed = true;
         }
 
@@ -227,7 +227,9 @@ public final class ModuleLiquidTankUnit implements ICustomModule<ModuleLiquidTan
             FluidStack fluid
     ) {
         if (state.getBlock() instanceof LiquidBlockContainer container) {
-            if (!container.canPlaceLiquid(player, level, pos, state, fluid.getFluid())) return false;
+            if (!container.canPlaceLiquid(player, level, pos, state, fluid.getFluid()))
+                return false;
+
             container.placeLiquid(level, pos, state, fluid.getFluid().defaultFluidState());
             playPlaceSound(level, pos, fluid);
             level.gameEvent(player, GameEvent.FLUID_PLACE, pos);
