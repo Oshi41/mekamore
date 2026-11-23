@@ -1,4 +1,4 @@
-package com.mekamore.fluid;
+package com.mekamore.capablity;
 
 import com.mekamore.registries.MekaMoreDataComponents;
 import com.mekamore.registries.MekaMoreModules;
@@ -7,7 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
 import java.util.Objects;

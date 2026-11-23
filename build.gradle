@@ -51,6 +51,19 @@ repositories {
         name = 'BlameJared (JEI)'
         url = 'https://maven.blamejared.com/'
     }
+
+    // Forestry CE via Modrinth's maven. exclusiveContent keeps it from serving anything else.
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Modrinth'
+                url = 'https://api.modrinth.com/maven'
+            }
+        }
+        filter {
+            includeGroup 'maven.modrinth'
+        }
+    }
 }
 
 base {

@@ -1,7 +1,7 @@
 package com.mekamore.registries;
 
 import com.mekamore.MekaMore;
-import com.mekamore.fluid.SimpleContainer;
+import com.mekamore.capablity.SimpleContainer;
 import mekanism.api.MekanismAPI;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;

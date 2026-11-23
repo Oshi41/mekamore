@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "forestry"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "SAS",
+    "CBC",
+    "SAS"
+  ],
+  "key": {
+    "S": {
+      "item": "forestry:woven_silk"
+    },
+    "A": {
+      "item": "mekanism:alloy_infused"
+    },
+    "C": {
+      "item": "mekanism:advanced_control_circuit"
+    },
+    "B": {
+      "item": "mekanism:module_base"
+    }
+  },
+  "result": {
+    "id": "mekamore:module_apiarist",
+    "count": 1
+  }
+}

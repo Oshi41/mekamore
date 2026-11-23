@@ -2,12 +2,12 @@
   "itemGroup.mekamore": "MekaMore",
 
   "item.mekamore.module_looting": "Looting Unit",
-
   "module.mekamore.module_looting": "Looting Unit",
   "description.mekamore.module_looting": "Grants the Meka-Tool one Looting level per installed unit, up to Looting IV. Energy is used on each successful melee hit; configure the cost in the MekaMore common config.",
 
   "module.mekamore.module_brush": "Brush Unit",
   "description.mekamore.module_brush": "Allows the Meka-Tool to brush suspicious sand and gravel.",
+
 
 
   "mekamore.configuration.title": "MekaMore Configuration",
@@ -22,9 +22,14 @@
   "key.categories.mekamore": "MekaMore",
   "hud.mekamore.module_zoom": "Zoom: %s%%",
 
-  "item.mekamore.module_revealing_goggles": "Revealing Goggles Module",
-  "mekanism.module.mekamore.revealing_goggles": "Revealing Goggles",
-  "mekanism.module.mekamore.revealing_goggles.description": "Highlights blocks and entities through walls within 64 blocks. Configure up to 3 filters.",
+  "item.mekamore.module_revealing_goggles": "Module of Revealing",
+  "module.mekamore.module_revealing_goggles": "Googles of Revealing",
+  "description.mekamore.module_revealing_goggles": "Allows you to highlight blocks and entities by filter.",
+
+  "item.mekamore.module_apiarist": "Apiarist Module",
+  "module.mekamore.module_apiarist": "Apiarist Module",
+  "description.mekamore.module_apiarist": "Protects you from the bees.",
+
   "gui.mekamore.reveal_goggles.title":      "Revealing Goggles – Filters",
   "gui.mekamore.reveal_goggles.filter":     "Filter %s",
   "gui.mekamore.reveal_goggles.pick_block": "Pick Block",
